@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Monkey-patching Objective-C</title>
+
+  <meta name="viewport" content="width=device-width"/>
+
+  <link rel="stylesheet" href="./css/reset.css" type="text/css"/>
+  <link rel="stylesheet" href="./css/showoff.css" type="text/css"/>
+
+  <script type="text/javascript" src="./js/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="./js/jquery.cycle.all.js"></script>
+	<script type="text/javascript" src="./js/jquery-print.js"></script>
+  <script type="text/javascript" src="./js/jquery.batchImageLoad.js"></script>
+
+  <script type="text/javascript" src="./js/jquery.doubletap-0.1.js"></script>
+
+  <script type="text/javascript" src="./js/fg.menu.js"></script>
+  <script type="text/javascript" src="./js/showoff.js"></script>
+  <script type="text/javascript" src="./js/jTypeWriter.js"> </script>
+  <script type="text/javascript" src="./js/sh_main.min.js"></script>
+  <script type="text/javascript" src="./js/core.js"></script>
+  <script type="text/javascript" src="./js/showoffcore.js"></script>
+  <script type="text/javascript" src="./js/coffee-script.js"></script>
+
+  <link type="text/css" href="./css/fg.menu.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/theme/ui.all.css" media="screen" rel="stylesheet" />
+  <link type="text/css" href="./css/sh_style.css" rel="stylesheet" >
+
+  
+
+  
+
+  <script type="text/javascript">
+  $(function(){
+      setupPreso(false, './');
+  });
+  </script>
+
+</head>
+
+<body>
+
+<a tabindex="0" href="#search-engines" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="navmenu"><span class="ui-icon ui-icon-triangle-1-s"></span>slides</a>
+<div id="navigation" class="hidden"></div>
+
+<div id="help">
+  <table>
+    <tr><td class="key">z, ?</td><td>toggle help (this)</td></tr>
+    <tr><td class="key">space, &rarr;</td><td>next slide</td></tr>
+    <tr><td class="key">shift-space, &larr;</td><td>previous slide</td></tr>
+    <tr><td class="key">d</td><td>toggle debug mode</td></tr>
+    <tr><td class="key">## &lt;ret&gt;</td><td>go to slide #</td></tr>
+    <tr><td class="key">c, t</td><td>table of contents (vi)</td></tr>
+    <tr><td class="key">f</td><td>toggle footer</td></tr>
+    <tr><td class="key">r</td><td>reload slides</td></tr>
+    <tr><td class="key">n</td><td>toggle notes</td></tr>
+    <tr><td class="key">p</td><td>run preshow</td></tr>
+  </table>
+</div>
+
+<div class="buttonNav">
+  <input type="submit" onClick="prevStep();" value="prev"/>
+  <input type="submit" onClick="nextStep();" value="next"/>
+</div>
+
+<div id="preso">loading presentation...</div>
+<div id="footer">
+  <span id="slideInfo"></span>
+  <span id="debugInfo"></span>
+  <span id="notesInfo"></span>
+</div>
+
+<div id="slides" class="offscreen" style="display:none;">
+<div class="slide" data-transition="none"><div class="content" ref="objective-c-basics/01_slide/1">
+<h1>Monkey-Patching</h1>
+
+<h1>Objective-C</h1>
+
+<h2>Extending iOS SDK</h2></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="objective-c-basics/01_slide/2">
+<h1>Defining Classes</h1>
+
+<pre><code>@interface MyObject : NSObject
+
+@end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="objective-c-basics/01_slide/3">
+<h1>Instance Variables == ivars</h1>
+
+<pre><code>@interface MyObject : NSObject {
+  @private
+  NSUInteger count
+  MySubObject* subObject;
+}
+
+@end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/4">
+<h1>Methods</h1>
+
+<pre><code>    @interface MyObject : NSObject {
+      @private
+      NSUInteger _count;
+      MySubObject* _subObject;
+    }
+
+    + (Counter*) counter;
+    - (void) increment;
+    - (MySubObject*) subObject;
+    - (void) setSubObject:(MySubObject*)subObject;
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/5">
+<h1>Implementing Classes</h1>
+
+<pre><code>    @implementation MyObject
+
+    ...
+
+    - (MySubObject*) subObject {
+      return _subObject;
+    }
+
+    - (void) setSubObject:(MySubObject*)subObject {
+      _subObject = [subObject retain];
+    }
+
+    ...
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/6">
+<h1>Properties</h1>
+
+<pre><code>    @interface MyObject : NSObject {
+      @private
+      NSUInteger count;
+      MySubObject* subObject;
+    }
+
+    + (Counter*) myObject;
+    - (void) increment;
+
+    @property (nonatomic,retain) subObject;
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="objective-c-basics/01_slide/7">
+<h1>Properties</h1>
+
+<pre><code>myObject.subObject;
+
+myObject.subObject = aSubObject;
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/8">
+<h1>Implementing Properties</h1>
+
+<pre><code>    @implementation MyObject
+
+    ...
+
+    - (MySubObject*) subObject {
+      return _subObject;
+    }
+
+    - (void) setSubObject:(MySubObject*)subObject {
+      _subObject = [subObject retain];
+    }
+
+    ...
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/9">
+<h1>@synthesize</h1>
+
+<pre><code>@implementation MyObject
+
+@synthesize subObject = _subObject;
+
+...
+
+@end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="objective-c-basics/01_slide/10">
+<h1>In fact ...</h1>
+
+<pre><code>    @interface MyObject : NSObject {
+      NSUInteger count;
+    }
+
+    ...
+
+    @property (nonatomic,retain) subObject;
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="extending-with-categories/01_slide/1">
+<h1>Reopening Classes (Category)</h1>
+
+<pre><code>    @interface NSDate (Helpers)
+
+    - (NSString*) timeAgoInWords;
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="extending-with-categories/01_slide/2">
+<h1>Reopening Classes (Category)</h1>
+
+<pre><code>    @implementation NSDate (Helpers)
+
+    - (NSString *)timeAgoInWords {
+      double ti = [self timeIntervalSinceNow];
+      ti = ti * -1;
+      if(ti &lt; 1) {
+        return @"never";
+      } else if (ti &lt; 60) {
+        return @"less than a minute ago";
+      } else if (ti &lt; 3600) {
+        int diff = round(ti / 60);
+        return [NSString stringWithFormat:@"%d minutes ago", diff];
+      } else if (ti &lt; 86400) {
+        int diff = round(ti / 60 / 60);
+        return[NSString stringWithFormat:@"%d hours ago", diff];
+      } else if (ti &lt; 2629743) {
+        int diff = round(ti / 60 / 60 / 24);
+        return[NSString stringWithFormat:@"%d days ago", diff];
+      } else {
+        return @"never";
+      }   
+    }
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="extending-with-categories/01_slide/3">
+<h1>SO ...</h1>
+
+<pre><code>    @interface UIViewController (Pager)
+
+    @property (nonatomic,retain) 
+        PagerController* pagerController;
+    @property (nonatomic,retain) 
+        ScrollTabBarItem* scrollTabBarItem;
+
+    @end
+
+    @implementation UIViewController (Pager)
+
+    @synthesize pagerController;
+    @synthesize scrollTabBarItem;
+
+    @end
+</code></pre></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="extending-with-categories/01_slide/4">
+<h1>BUT ...</h1></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="extending-with-categories/01_slide/5">
+<h1>Categories Can't Create</h1>
+
+<h1>New ivars!</h1></div>
+</div><div class="slide" data-transition="none"><div class="content" ref="extending-with-categories/01_slide/6">
+<h1>What to do?</h1></div>
+</div><div class="slide" data-transition="none"><div class="content smaller" ref="extending-with-categories/01_slide/7">
+<h1>Associative References!</h1>
+
+<pre><code>    @implementation UIViewController (Pager)
+
+    static char pagerControllerKey;
+    static char scrollTabBarItemKey;
+
+    - (PagerController *)pagerController
+    {
+      return (PagerController*)
+          objc_getAssociatedObject(self,
+              &amp;pagerControllerKey);
+    }
+
+    - (void)setPagerController:
+        (PagerController *)pagerController
+    {
+      objc_setAssociatedObject(self, 
+        &amp;pagerControllerKey, 
+        pagerController,
+        OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+
+    - (ScrollTabBarItem *)scrollTabBarItem
+    {
+      return (ScrollTabBarItem*)
+        objc_getAssociatedObject(self,
+          &amp;scrollTabBarItemKey);
+    }
+
+    - (void)setScrollTabBarItem:(ScrollTabBarItem *)scrollTabBarItem
+    {
+      objc_setAssociatedObject(self, 
+        &amp;scrollTabBarItemKey, scrollTabBarItem,
+        OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    @end
+</code></pre></div>
+</div></div>
+
+</body>
+</html>
