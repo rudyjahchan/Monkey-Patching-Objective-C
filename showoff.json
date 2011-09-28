@@ -1,0 +1,3 @@
+{ "name": "Monkey-patching Objective-C", 
+  "sections": [ { "section" : "objective-c-basics" },
+                {  "section" : "extending-with-categories" } ]}
